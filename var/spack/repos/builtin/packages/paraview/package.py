@@ -191,7 +191,7 @@ class Paraview(CMakePackage, CudaPackage, ROCmPackage):
     conflicts("+qt", when="+osmesa")
 
     depends_on("ospray@2.1:", when="+raytracing")
-    depends_on("openimagedenoise", when="+raytracing")
+    depends_on("openimagedenoise", when="+raytracing target=x86_64")
     depends_on("ospray +mpi", when="+raytracing +mpi")
 
     depends_on("bzip2")
@@ -662,6 +662,8 @@ class Paraview(CMakePackage, CudaPackage, ROCmPackage):
         cmake_args.append(self.define_from_variant("PARAVIEW_ENABLE_RAYTRACING", "raytracing"))
         # Currently only support OSPRay ray tracing
         cmake_args.append(self.define_from_variant("VTK_ENABLE_OSPRAY", "raytracing"))
-        cmake_args.append(self.define_from_variant("VTKOSPRAY_ENABLE_DENOISER", "raytracing"))
+
+        if spec.satisfies("target=x86_64"):
+            cmake_args.append(self.define_from_variant("VTKOSPRAY_ENABLE_DENOISER", "raytracing"))
 
         return cmake_args
